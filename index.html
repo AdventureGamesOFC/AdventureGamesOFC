@@ -76,37 +76,20 @@ const chestLootTables = {
 
 // Monster loot tables (with guaranteed and optional non-guaranteed loot)
 const monsterLootTables = {
-    Goblin: {
-        guaranteed: ["Iron Sword", "Health Potion"],
-        nonGuaranteed: [
-            { item: "Gold Coin", chance: 0.5 },
-            { item: "Silver Ring", chance: 0.3 },
-            { item: "Leather Armor", chance: 0.2 }
-        ],
+    Bokoblin: {
+        guaranteed: ["1 Gold", "1 Scrap"],
         cursedLoot: {
-            guaranteed: ["Cursed Skull", "Demonic Talisman"],
-            nonGuaranteed: [
-                { item: "Poisoned Gem", chance: 0.4 },
-                { item: "Soul Shard", chance: 0.3 }
-            ]
+        guaranteed: ["2 Gold", "1 Scrap"],
         }
     },
-    Dragon: {
-        guaranteed: ["Dragon Scale", "Fire Potion"],
-        nonGuaranteed: [
-            { item: "Gold Bar", chance: 0.6 },
-            { item: "Flame Sword", chance: 0.4 }
-        ],
+    SilverBokoblin: {
+        guaranteed: ["3 Gold", "3 Scraps", "1 Bokoblin Horn"],
         cursedLoot: {
-            guaranteed: ["Cursed Dragon Tooth", "Demonic Firestone"],
-            nonGuaranteed: [
-                { item: "Dragon Bone", chance: 0.5 },
-                { item: "Cursed Dragon Scale", chance: 0.3 }
-            ]
+        guaranteed: ["6 Gold", "3 Scraps", "2 Bokoblin Horn"],
         }
     },
-    Zombie: {
-        guaranteed: ["Zombie Flesh", "Rusty Sword"],
+    GoldenBokoblin: {
+        guaranteed: ["15 Gold", "6 Scraps"],
         nonGuaranteed: [
             { item: "Health Potion", chance: 0.3 },
             { item: "Old Key", chance: 0.2 },
@@ -120,7 +103,7 @@ const monsterLootTables = {
             ]
         }
     },
-    Spider: {
+    BossSilverBokoblin: {
         guaranteed: ["Spider Venom", "Small Web"],
         nonGuaranteed: [
             { item: "Poisonous Fang", chance: 0.5 },
