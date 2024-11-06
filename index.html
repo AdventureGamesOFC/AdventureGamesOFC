@@ -51,10 +51,10 @@
 
 <!-- Monster Loot Section -->
 <h2>Monster Loot</h2>
-<button onclick="generateMonsterLoot('Goblin')">Goblin</button>
-<button onclick="generateMonsterLoot('Dragon')">Dragon</button>
-<button onclick="generateMonsterLoot('Zombie')">Zombie</button>
-<button onclick="generateMonsterLoot('Spider')">Spider</button>
+<button onclick="generateMonsterLoot('Bokoblin')">Bokoblin</button>
+<button onclick="generateMonsterLoot('SilverBokoblin')">SilverBokoblin</button>
+<button onclick="generateMonsterLoot('GoldenBokoblin')">GoldenBokoblin</button>
+<button onclick="generateMonsterLoot('BossSilverBokoblin')">BossSilverBokoblin</button>
 <br><br>
 <input type="checkbox" id="cursedMedal" onclick="toggleCursedMode()"> Cursed Medal Mode
 <br><br>
@@ -96,21 +96,21 @@ const monsterLootTables = {
             { item: "Torn Cloak", chance: 0.1 }
         ],
         cursedLoot: {
-            guaranteed: ["Zombie King’s Crown", "Haunted Flesh"],
+            guaranteed: ["GoldenBokoblin King’s Crown", "Haunted Flesh"],
             nonGuaranteed: [
                 { item: "Cursed Bone", chance: 0.4 },
-                { item: "Zombie Arm", chance: 0.3 }
+                { item: "GoldenBokoblin Arm", chance: 0.3 }
             ]
         }
     },
     BossSilverBokoblin: {
-        guaranteed: ["Spider Venom", "Small Web"],
+        guaranteed: ["BossSilverBokoblin Venom", "Small Web"],
         nonGuaranteed: [
             { item: "Poisonous Fang", chance: 0.5 },
             { item: "Silk Cloth", chance: 0.4 }
         ],
         cursedLoot: {
-            guaranteed: ["Cursed Spider Fang", "Demonic Webbing"],
+            guaranteed: ["Cursed BossSilverBokoblin Fang", "Demonic Webbing"],
             nonGuaranteed: [
                 { item: "Poisonous Shard", chance: 0.4 },
                 { item: "Cursed Relic", chance: 0.2 }
