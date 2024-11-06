@@ -65,20 +65,20 @@
 <div id="monsterLootResult"></div>
 
 <script>
-// Chest loot tables for different areas (selects one item at random)
+// Chest loot tables for different areas
 const chestLootTables = {
     "Clock Town Chest": [
-        { item: "1 Scrap", chance: 0.3 },  // Most common
+        { item: "1 Scrap", chance: 0.3 },
         { item: "3 Gold", chance: 0.3 },
-        { item: "4 Gold", chance: 0.25 },  // In-between rarity
-        { item: "Deku Mask", chance: 0.075 },  // Rarest
+        { item: "4 Gold", chance: 0.25 },
+        { item: "Deku Mask", chance: 0.075 },
         { item: "Couple's Mask", chance: 0.075 }
     ],
     "Termina Field Chest": [
-        { item: "Bunny Hood", chance: 0.05 },  // Rarest
+        { item: "Bunny Hood", chance: 0.05 },
         { item: "5 Gold", chance: 0.05 },
-        { item: "10 Rupees", chance: 0.2 },  // Slightly more common
-        { item: "2 Scraps", chance: 0.25 },  // Common
+        { item: "10 Rupees", chance: 0.2 },
+        { item: "2 Scraps", chance: 0.25 },
         { item: "3 Gold", chance: 0.25 },
         { item: "5 Rupees", chance: 0.25 }
     ],
@@ -87,34 +87,7 @@ const chestLootTables = {
     ]
 };
 
-// Function to generate random chest loot (one item per chest)
-function generateChestLoot(chestName) {
-    const lootTable = chestLootTables[chestName];
-    const chestLootResult = document.getElementById('chestLootResult');
-    chestLootResult.innerHTML = ''; // Clear previous loot
-
-    if (!lootTable) {
-        chestLootResult.innerHTML = 'Loot table not found!';
-        return;
-    }
-
-    // Select an item based on its chance value
-    const random = Math.random();
-    let cumulativeChance = 0;
-    let selectedItem = "Nothing"; // Default if no item is found
-
-    for (const loot of lootTable) {
-        cumulativeChance += loot.chance || 0;
-        if (random < cumulativeChance) {
-            selectedItem = loot.item;
-            break;
-        }
-    }
-
-    chestLootResult.innerHTML = `<div class="lootItem">${selectedItem}</div>`;
-}
-
-// Monster loot tables (kept unchanged as per requirements)
+// Monster loot tables with guaranteed and optional cursed loot
 const monsterLootTables = {
     "Normal Bokoblin": {
         guaranteed: ["1 Gold", "1 Scrap"],
@@ -143,7 +116,7 @@ const monsterLootTables = {
     "Chuchu": {
         guaranteed: ["1 Rupee"],
         nonGuaranteed: [
-            { item: "0-1 Chuchu Jelly", chance: 1 }
+            { item: "1 Chuchu Jelly", chance: 1 }
         ],
         cursedLoot: {
             guaranteed: ["2 Rupees", "2 Chuchu Jelly"],
@@ -158,7 +131,7 @@ const monsterLootTables = {
     "Monke": {
         guaranteed: ["2 Skill Points", "Hookshot", "5 Gold", "10 Scraps"],
         cursedLoot: {
-            guaranteed: ["2 Skill Points", "Hookshot", "10 Gold", "10 Scraps"]
+            guaranteed: ["2 Skill Points", "10 Gold", "10 Scraps"]
         }
     },
     "Le Oat Brothers": {
@@ -172,11 +145,23 @@ const monsterLootTables = {
     }
 };
 
+// Function to parse range items and pick a random number within the range
+function getRandomQuantity(item) {
+    const rangeMatch = item.match(/(\d+)-(\d+)/);
+    if (rangeMatch) {
+        const min = parseInt(rangeMatch[1]);
+        const max = parseInt(rangeMatch[2]);
+        const randomQuantity = Math.floor(Math.random() * (max - min + 1)) + min;
+        return item.replace(rangeMatch[0], randomQuantity);
+    }
+    return item;
+}
+
 // Generate monster loot with optional Cursed Medal Mode
 function generateMonsterLoot(monsterName) {
     const lootTable = monsterLootTables[monsterName];
     const monsterLootResult = document.getElementById('monsterLootResult');
-    monsterLootResult.innerHTML = ''; // Clear previous loot
+    monsterLootResult.innerHTML = '';
 
     if (!lootTable) {
         monsterLootResult.innerHTML = 'Loot table not found!';
@@ -190,7 +175,7 @@ function generateMonsterLoot(monsterName) {
     selectedLoot.guaranteed.forEach(item => {
         const div = document.createElement('div');
         div.className = 'lootItem';
-        div.textContent = item;
+        div.textContent = getRandomQuantity(item);
         monsterLootResult.appendChild(div);
     });
 
@@ -199,15 +184,40 @@ function generateMonsterLoot(monsterName) {
         if (Math.random() < drop.chance) {
             const div = document.createElement('div');
             div.className = 'lootItem';
-            div.textContent = drop.item;
+            div.textContent = getRandomQuantity(drop.item);
             monsterLootResult.appendChild(div);
         }
     });
 }
 
+// Function to generate chest loot
+function generateChestLoot(chestName) {
+    const lootTable = chestLootTables[chestName];
+    const chestLootResult = document.getElementById('chestLootResult');
+    chestLootResult.innerHTML = '';
+
+    if (!lootTable) {
+        chestLootResult.innerHTML = 'Loot table not found!';
+        return;
+    }
+
+    const random = Math.random();
+    let cumulativeChance = 0;
+    let selectedItem = "Nothing";
+
+    for (const loot of lootTable) {
+        cumulativeChance += loot.chance || 0;
+        if (random < cumulativeChance) {
+            selectedItem = loot.item;
+            break;
+        }
+    }
+
+    chestLootResult.innerHTML = `<div class="lootItem">${selectedItem}</div>`;
+}
+
 // Toggle the Cursed Medal Mode and regenerate loot
 function toggleCursedMode() {
-    // Check for currently selected monster and regenerate loot
     const monsterButtons = document.querySelectorAll('button[onclick^="generateMonsterLoot"]');
     monsterButtons.forEach(button => {
         if (button.dataset.selected) {
