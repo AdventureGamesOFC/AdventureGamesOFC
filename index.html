@@ -236,53 +236,37 @@ const monsterLootTables = {
 
 // Toggle cursed mode
 function toggleCursedMode() {
-    const isCursed = document.getElementById("cursedMedal").checked;
+    const isCursed = document.getElementById('cursedMedal').checked;
     if (isCursed) {
-        document.body.classList.add("cursedItem");
-    } else {
-        document.body.classList.remove("cursedItem");
+        alert("Cursed Medal Mode: Activated");
     }
 }
 
-// Helper function to generate loot
-function generateLoot(lootTable, isCursed) {
-    const lootResult = [];
-    lootTable.forEach(loot => {
-        const chance = Math.random();
-        if (chance < loot.chance) {
-            lootResult.push(loot.item);
+// Chest loot generator
+function generateChestLoot(chestName) {
+    const loot = chestLootTables[chestName];
+    let result = "";
+    loot.forEach(item => {
+        if (Math.random() < item.chance) {
+            result += `<div class="lootItem ${Math.random() < 0.1 ? "cursedItem" : ""}">${item.item}</div>`;
         }
     });
-
-    if (isCursed && lootTable.cursedLoot) {
-        lootResult.push(...lootTable.cursedLoot.guaranteed);
-    }
-
-    return lootResult;
+    document.getElementById("chestLootResult").innerHTML = result;
 }
 
-// Function to generate loot for chest
-function generateChestLoot(chestType) {
-    const loot = chestLootTables[chestType] || [];
-    const lootResult = generateLoot(loot, false);
-    document.getElementById('chestLootResult').innerHTML = lootResult.join(', ');
-}
-
-// Function to generate loot for monsters
-function generateMonsterLoot(monsterType) {
-    const loot = monsterLootTables[monsterType] || {};
-    const isCursed = document.getElementById("cursedMedal").checked;
-    let lootResult = generateLoot(loot.guaranteed, isCursed);
-
-    if (loot.nonGuaranteed) {
-        loot.nonGuaranteed.forEach(item => {
-            if (Math.random() < item.chance) {
-                lootResult.push(item.item);
-            }
+// Monster loot generator
+function generateMonsterLoot(monsterName) {
+    const lootTable = monsterLootTables[monsterName];
+    let result = "";
+    lootTable.guaranteed.forEach(item => {
+        result += `<div class="lootItem ${Math.random() < 0.1 ? "cursedItem" : ""}">${item}</div>`;
+    });
+    if (document.getElementById('cursedMedal').checked) {
+        lootTable.cursedLoot.guaranteed.forEach(item => {
+            result += `<div class="lootItem cursedItem">${item}</div>`;
         });
     }
-
-    document.getElementById('monsterLootResult').innerHTML = lootResult.join(', ');
+    document.getElementById("monsterLootResult").innerHTML = result;
 }
 </script>
 
