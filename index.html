@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Loot Table Generator</title>
+  <title>Loot Generator</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -21,7 +21,7 @@
     button:hover {
       background-color: #45a049;
     }
-    #lootResult {
+    #lootResult, #chestLootResult, #monsterLootResult {
       margin-top: 20px;
     }
     .lootItem {
@@ -36,16 +36,26 @@
   </style>
 </head>
 <body>
-  <h1>Loot Table Generator</h1>
-  <h2>Select a Loot Table</h2>
-  <button onclick="generateLoot('ClockTown')">Clock Town Chest</button>
-  <button onclick="generateLoot('TerminaField')">Termina Field Chest</button>
-  <button onclick="generateLoot('MonsterLoot')">Monster Loot</button>
+  <h1>Loot Generator</h1>
+
+  <h2>Chest Loot</h2>
+  <button onclick="generateChestLoot('Clock Town Chest')">Clock Town Chest</button>
+  <button onclick="generateChestLoot('Termina Field Chest')">Termina Field Chest</button>
+  <button onclick="generateChestLoot('Dungeon Chest')">Dungeon Chest</button>
+  <br><br>
+  <div id="chestLootResult"></div>
+
+  <hr>
+
+  <h2>Monster Loot</h2>
+  <button onclick="generateMonsterLoot('Goblin')">Goblin</button>
+  <button onclick="generateMonsterLoot('Dragon')">Dragon</button>
+  <button onclick="generateMonsterLoot('Zombie')">Zombie</button>
+  <button onclick="generateMonsterLoot('Spider')">Spider</button>
   <br><br>
   <input type="checkbox" id="cursedMedal" onclick="toggleCursedMode()"> Cursed Medal Mode
   <br><br>
-  <h3>Loot:</h3>
-  <div id="lootResult"></div>
+  <div id="monsterLootResult"></div>
 
   <script src="loot.js"></script>
 </body>
