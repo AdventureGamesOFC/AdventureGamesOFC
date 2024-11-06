@@ -1,44 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D&D Stats Updater</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loot Table Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 20px;
+    }
+    button {
+      padding: 10px;
+      margin: 5px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #lootResult {
+      margin-top: 20px;
+    }
+    .lootItem {
+      margin: 5px;
+      padding: 5px;
+      background-color: #f1f1f1;
+      border-radius: 5px;
+    }
+    .cursedItem {
+      color: red;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>D&D Player Stats Updater</h1>
-        <label for="playerSelect">Select Player:</label>
-        <select id="playerSelect">
-            <option value="CaseOh Jr.">CaseOh Jr.</option>
-            <option value="Atomic Child">Atomic Child</option>
-            <option value="Anime Kid">Anime Kid</option>
-            <option value="Nerd">Nerd</option>
-        </select>
+  <h1>Loot Table Generator</h1>
+  <h2>Select a Loot Table</h2>
+  <button onclick="generateLoot('ClockTown')">Clock Town Chest</button>
+  <button onclick="generateLoot('TerminaField')">Termina Field Chest</button>
+  <button onclick="generateLoot('MonsterLoot')">Monster Loot</button>
+  <br><br>
+  <input type="checkbox" id="cursedMedal" onclick="toggleCursedMode()"> Cursed Medal Mode
+  <br><br>
+  <h3>Loot:</h3>
+  <div id="lootResult"></div>
 
-        <label for="statSelect">Select Stat:</label>
-        <select id="statSelect">
-            <option value="Health">Health</option>
-            <option value="Max Health">Max Health</option>
-            <option value="Morale">Morale</option>
-            <option value="Speed">Speed</option>
-            <option value="Dodge Chance">Dodge Chance</option>
-            <option value="Stress">Stress</option>
-            <option value="Intelligence">Intelligence</option>
-            <option value="Rizz">Rizz</option>
-            <option value="Aim">Aim</option>
-            <option value="Strength">Strength</option>
-        </select>
-
-        <label for="newValue">New Value:</label>
-        <input type="number" id="newValue" placeholder="Enter new value">
-
-        <button id="updateButton">Update Stat</button>
-
-        <div id="output" class="output"></div>
-    </div>
-
-    <script src="script.js"></script>
+  <script src="loot.js"></script>
 </body>
 </html>
