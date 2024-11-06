@@ -5,42 +5,131 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loot Generator</title>
     <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body Styles */
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: 'Georgia', serif;
+            background-color: #2b2b2b;
+            color: #f4f4f4;
             padding: 20px;
+            height: 100vh;
+            overflow: hidden;
         }
+
+        /* Title Styles */
+        h1 {
+            text-align: center;
+            font-size: 3rem;
+            color: #f4f4f4;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            margin-bottom: 30px;
+            font-family: 'Cinzel', serif;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: #f9a825;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            margin-bottom: 10px;
+        }
+
+        /* Button Styling */
         button {
-            padding: 10px;
-            margin: 5px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
+            padding: 15px;
+            margin: 10px;
+            background-color: #555;
+            color: #f4f4f4;
+            border: 2px solid #444;
+            border-radius: 5px;
             cursor: pointer;
+            font-size: 1.2rem;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
         }
+
         button:hover {
-            background-color: #45a049;
+            background-color: #444;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
         }
+
+        /* Loot Result Styling */
         #lootResult, #monsterLootResult, #chestLootResult {
             margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
         }
+
         .lootItem {
-            margin: 5px;
-            padding: 5px;
-            background-color: #f1f1f1;
+            padding: 12px 20px;
+            background-color: #333;
             border-radius: 5px;
+            border: 1px solid #555;
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
         }
+
+        .lootItem:hover {
+            background-color: #444;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Cursed Item Styling */
         .cursedItem {
-            color: red;
+            color: #f44336;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(244, 67, 54, 0.5);
+        }
+
+        /* Cursed Medal Mode Toggle */
+        #cursedMedal {
+            margin: 20px auto;
+            display: block;
+            cursor: pointer;
+            font-size: 1.3rem;
+            color: #f4f4f4;
+            background-color: #666;
+            padding: 10px;
+            border-radius: 5px;
+            border: 2px solid #555;
+            transition: all 0.3s ease;
+        }
+
+        #cursedMedal:hover {
+            background-color: #555;
+            box-shadow: 0 0 10px rgba(244, 67, 54, 0.5);
+        }
+
+        /* Glow Effect for Buttons and Text */
+        .glow {
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.3), 0 0 30px rgba(255, 165, 0, 0.6);
+        }
+
+        /* Animation Effects */
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .lootItem {
+            animation: fadeIn 1s ease-out forwards;
         }
     </style>
 </head>
 <body>
 
-<h1>Loot Generator</h1>
+<h1 class="glow">Loot Generator</h1>
 
 <!-- Chest Loot Section -->
-<h2>Chest Loot</h2>
+<h2 class="glow">Chest Loot</h2>
 <button onclick="generateChestLoot('Clock Town Chest')">Clock Town Chest</button>
 <button onclick="generateChestLoot('Termina Field Chest')">Termina Field Chest</button>
 <button onclick="generateChestLoot('Dungeon Chest')">Dungeon Chest</button>
@@ -50,7 +139,7 @@
 <hr>
 
 <!-- Monster Loot Section -->
-<h2>Monster Loot</h2>
+<h2 class="glow">Monster Loot</h2>
 <button onclick="generateMonsterLoot('Normal Bokoblin')">Normal Bokoblin</button>
 <button onclick="generateMonsterLoot('Silver Bokoblin')">Silver Bokoblin</button>
 <button onclick="generateMonsterLoot('Golden Bokoblin')">Golden Bokoblin</button>
@@ -139,91 +228,61 @@ const monsterLootTables = {
         cursedLoot: {
             guaranteed: ["10 Gold"],
             nonGuaranteed: [
-                { item: "Unlimited Bacon", chance: 0.1 }
+                { item: "Unlimited Bacon", chance: 0.05 }
             ]
         }
     }
 };
 
-// Function to parse range items and pick a random number within the range
-function getRandomQuantity(item) {
-    const rangeMatch = item.match(/(\d+)-(\d+)/);
-    if (rangeMatch) {
-        const min = parseInt(rangeMatch[1]);
-        const max = parseInt(rangeMatch[2]);
-        const randomQuantity = Math.floor(Math.random() * (max - min + 1)) + min;
-        return item.replace(rangeMatch[0], randomQuantity);
-    }
-    return item;
-}
-
-// Generate monster loot with optional Cursed Medal Mode
-function generateMonsterLoot(monsterName) {
-    const lootTable = monsterLootTables[monsterName];
-    const monsterLootResult = document.getElementById('monsterLootResult');
-    monsterLootResult.innerHTML = '';
-
-    if (!lootTable) {
-        monsterLootResult.innerHTML = 'Loot table not found!';
-        return;
-    }
-
-    const isCursed = document.getElementById('cursedMedal').checked;
-    const selectedLoot = isCursed && lootTable.cursedLoot ? lootTable.cursedLoot : lootTable;
-
-    // Display guaranteed loot
-    selectedLoot.guaranteed.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'lootItem';
-        div.textContent = getRandomQuantity(item);
-        monsterLootResult.appendChild(div);
-    });
-
-    // Display non-guaranteed loot with chances
-    (selectedLoot.nonGuaranteed || []).forEach(drop => {
-        if (Math.random() < drop.chance) {
-            const div = document.createElement('div');
-            div.className = 'lootItem';
-            div.textContent = getRandomQuantity(drop.item);
-            monsterLootResult.appendChild(div);
-        }
-    });
-}
-
-// Function to generate chest loot
-function generateChestLoot(chestName) {
-    const lootTable = chestLootTables[chestName];
-    const chestLootResult = document.getElementById('chestLootResult');
-    chestLootResult.innerHTML = '';
-
-    if (!lootTable) {
-        chestLootResult.innerHTML = 'Loot table not found!';
-        return;
-    }
-
-    const random = Math.random();
-    let cumulativeChance = 0;
-    let selectedItem = "Nothing";
-
-    for (const loot of lootTable) {
-        cumulativeChance += loot.chance || 0;
-        if (random < cumulativeChance) {
-            selectedItem = loot.item;
-            break;
-        }
-    }
-
-    chestLootResult.innerHTML = `<div class="lootItem">${selectedItem}</div>`;
-}
-
-// Toggle the Cursed Medal Mode and regenerate loot
+// Toggle cursed mode
 function toggleCursedMode() {
-    const monsterButtons = document.querySelectorAll('button[onclick^="generateMonsterLoot"]');
-    monsterButtons.forEach(button => {
-        if (button.dataset.selected) {
-            generateMonsterLoot(button.innerText);
+    const isCursed = document.getElementById("cursedMedal").checked;
+    if (isCursed) {
+        document.body.classList.add("cursedItem");
+    } else {
+        document.body.classList.remove("cursedItem");
+    }
+}
+
+// Helper function to generate loot
+function generateLoot(lootTable, isCursed) {
+    const lootResult = [];
+    lootTable.forEach(loot => {
+        const chance = Math.random();
+        if (chance < loot.chance) {
+            lootResult.push(loot.item);
         }
     });
+
+    if (isCursed && lootTable.cursedLoot) {
+        lootResult.push(...lootTable.cursedLoot.guaranteed);
+    }
+
+    return lootResult;
+}
+
+// Function to generate loot for chest
+function generateChestLoot(chestType) {
+    const loot = chestLootTables[chestType] || [];
+    const lootResult = generateLoot(loot, false);
+    document.getElementById('chestLootResult').innerHTML = lootResult.join(', ');
+}
+
+// Function to generate loot for monsters
+function generateMonsterLoot(monsterType) {
+    const loot = monsterLootTables[monsterType] || {};
+    const isCursed = document.getElementById("cursedMedal").checked;
+    let lootResult = generateLoot(loot.guaranteed, isCursed);
+
+    if (loot.nonGuaranteed) {
+        loot.nonGuaranteed.forEach(item => {
+            if (Math.random() < item.chance) {
+                lootResult.push(item.item);
+            }
+        });
+    }
+
+    document.getElementById('monsterLootResult').innerHTML = lootResult.join(', ');
 }
 </script>
 
