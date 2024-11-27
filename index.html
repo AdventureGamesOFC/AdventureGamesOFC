@@ -5,267 +5,422 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loot Generator</title>
     <style>
-        /* Basic Reset */
+        :root {
+            --parchment-dark: #e6d8c3;
+            --ink-black: #1a1a1a;
+            --leather-deep: #4a3328;
+            --blood-red: #5d0e0e;
+            --shadow-dark: rgba(0,0,0,0.5);
+            --aged-bronze: #6f4e37;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        /* Body Styles */
         body {
-            font-family: 'Georgia', serif;
-            background-color: #2b2b2b;
-            color: #f4f4f4;
-            padding: 20px;
-            height: 100vh;
+            font-family: "Times New Roman", Times, serif;
+            background-color: var(--parchment-dark);
+            color: var(--ink-black);
+            line-height: 1.6;
+            padding: 2rem;
+            background-image: 
+                linear-gradient(rgba(0,0,0,0.05), rgba(0,0,0,0.05)),
+                url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000' fill-opacity='0.1'%3E%3Cpath d='M50 0a10 10 0 0 1 10 10v80a10 10 0 0 1-10 10 10 10 0 0 1-10-10V10A10 10 0 0 1 50 0zm40 40a10 10 0 0 1 10 10v40a10 10 0 0 1-10 10 10 10 0 0 1-10-10V50a10 10 0 0 1 10-10zM10 60a10 10 0 0 1 10 10v20a10 10 0 0 1-10 10 10 10 0 0 1-10-10V70a10 10 0 0 1 10-10z'/%3E%3C/g%3E%3C/svg%3E");
+            background-blend-mode: multiply;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: rgba(255,255,255,0.85);
+            box-shadow: 0 8px 30px var(--shadow-dark);
+            border: 3px solid var(--leather-deep);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000' fill-opacity='0.03'%3E%3Cpath d='M0 0l20 20L0 40zm60 60l20 20L60 100z'/%3E%3C/g%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        .header {
+            background-color: var(--leather-deep);
+            color: var(--parchment-dark);
+            text-align: center;
+            padding: 1.5rem;
+            font-family: "Times New Roman", Times, serif;
+            position: relative;
             overflow: hidden;
         }
 
-        /* Title Styles */
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.05) 10px,
+                rgba(255,255,255,0.05) 20px
+            );
+            transform: rotate(-45deg);
+            opacity: 0.3;
+        }
+
         h1 {
-            text-align: center;
             font-size: 3rem;
-            color: #f4f4f4;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-            margin-bottom: 30px;
-            font-family: 'Cinzel', serif;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 4px var(--shadow-dark);
         }
 
-        h2 {
-            font-size: 1.8rem;
-            color: #f9a825;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-            margin-bottom: 10px;
+        .section {
+            padding: 2rem;
+            border-bottom: 3px double var(--leather-deep);
+            position: relative;
         }
 
-        /* Button Styling */
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
         button {
-            padding: 15px;
-            margin: 10px;
-            background-color: #555;
-            color: #f4f4f4;
-            border: 2px solid #444;
-            border-radius: 5px;
+            font-family: "Times New Roman", Times, serif;
+            background-color: var(--aged-bronze);
+            color: var(--parchment-dark);
+            border: 2px solid var(--leather-deep);
+            padding: 0.5rem 1rem;
             cursor: pointer;
-            font-size: 1.2rem;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 2px 2px 5px var(--shadow-dark);
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                0deg, 
+                transparent, 
+                rgba(255,255,255,0.2), 
+                transparent
+            );
+            transform: rotate(45deg);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        button:hover::before {
+            opacity: 1;
         }
 
         button:hover {
-            background-color: #444;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            transform: scale(1.05);
+            background-color: var(--blood-red);
         }
 
-        /* Loot Result Styling */
-        #lootResult, #monsterLootResult, #chestLootResult {
-            margin-top: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
+        .loot-result {
+            background-color: rgba(139,69,19,0.1);
+            border: 3px dashed var(--leather-deep);
+            padding: 1rem;
+            margin-top: 1rem;
+            min-height: 100px;
+            box-shadow: inset 2px 2px 5px var(--shadow-dark);
         }
 
         .lootItem {
-            padding: 12px 20px;
-            background-color: #333;
-            border-radius: 5px;
-            border: 1px solid #555;
-            box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
+            background-color: rgba(255,255,255,0.7);
+            border: 2px solid var(--leather-deep);
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            text-align: center;
+            font-weight: 600;
+            animation: slideIn 0.5s ease;
+            box-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+            position: relative;
         }
 
-        .lootItem:hover {
-            background-color: #444;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        .lootItem::before {
+            content: '✦';
+            position: absolute;
+            left: 10px;
+            color: var(--aged-bronze);
+            opacity: 0.5;
         }
 
-        /* Cursed Item Styling */
         .cursedItem {
-            color: #f44336;
-            font-weight: bold;
-            text-shadow: 0 0 10px rgba(244, 67, 54, 0.5);
+            background-color: rgba(139,0,0,0.2);
+            border-style: double;
+            color: var(--blood-red);
+            animation: cursedPulse 1.5s infinite alternate;
         }
 
-        /* Cursed Medal Mode Toggle */
-        #cursedMedal {
-            margin: 20px auto;
-            display: block;
-            cursor: pointer;
-            font-size: 1.3rem;
-            color: #f4f4f4;
-            background-color: #666;
-            padding: 10px;
-            border-radius: 5px;
-            border: 2px solid #555;
-            transition: all 0.3s ease;
+        .cursed-toggle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 1rem 0;
+            font-family: "Times New Roman", Times, serif;
         }
 
-        #cursedMedal:hover {
-            background-color: #555;
-            box-shadow: 0 0 10px rgba(244, 67, 54, 0.5);
+        @keyframes slideIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(-20px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
         }
 
-        /* Glow Effect for Buttons and Text */
-        .glow {
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.3), 0 0 30px rgba(255, 165, 0, 0.6);
+        @keyframes cursedPulse {
+            from { 
+                transform: scale(1); 
+                box-shadow: 0 0 5px var(--blood-red);
+            }
+            to { 
+                transform: scale(1.02); 
+                box-shadow: 0 0 15px var(--blood-red);
+            }
         }
 
-        /* Animation Effects */
-        @keyframes fadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-
-        .lootItem {
-            animation: fadeIn 1s ease-out forwards;
+        @media (max-width: 600px) {
+            body { padding: 0.5rem; }
+            .section { padding: 1rem; }
+            button { 
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <div class="header">
+            <h1>Grimoire of Spoils</h1>
+        </div>
 
-<h1 class="glow">Loot Generator</h1>
+        <div class="section">
+            <div class="button-group">
+                <button onclick="generateChestLoot('Clock Town Chest')">Clock Town Chest</button>
+                <button onclick="generateChestLoot('Termina Field Chest')">Termina Field Chest</button>
+            </div>
+            <div id="chestLootResult" class="loot-result"></div>
+        </div>
 
-<!-- Chest Loot Section -->
-<h2 class="glow">Chest Loot</h2>
-<button onclick="generateChestLoot('Clock Town Chest')">Clock Town Chest</button>
-<button onclick="generateChestLoot('Termina Field Chest')">Termina Field Chest</button>
-<button onclick="generateChestLoot('Dungeon Chest')">Dungeon Chest</button>
-<br><br>
-<div id="chestLootResult"></div>
+        <div class="section">
+            <div class="button-group">
+                <button onclick="generateMonsterLoot('Normal Bokoblin')">Normal Bokoblin</button>
+                <button onclick="generateMonsterLoot('Silver Bokoblin')">Silver Bokoblin</button>
+                <button onclick="generateMonsterLoot('Golden Bokoblin')">Golden Bokoblin</button>
+                <button onclick="generateMonsterLoot('Boss Silver Bokoblin')">Boss Silver Bokoblin</button>
+                <button onclick="generateMonsterLoot('Chuchu')">Chuchu</button>
+                <button onclick="generateMonsterLoot('Boss Chuchu')">Boss Chuchu</button>
+                <button onclick="generateMonsterLoot('Monke')">Monke</button>
+                <button onclick="generateMonsterLoot('Le Oat Brothers')">Le Oat Brothers</button>
+            </div>
 
-<hr>
+            <div class="cursed-toggle">
+                <input type="checkbox" id="cursedMedal">
+                <label for="cursedMedal" style="margin-left: 0.5rem;">Cursed Artifact Mode</label>
+            </div>
 
-<!-- Monster Loot Section -->
-<h2 class="glow">Monster Loot</h2>
-<button onclick="generateMonsterLoot('Normal Bokoblin')">Normal Bokoblin</button>
-<button onclick="generateMonsterLoot('Silver Bokoblin')">Silver Bokoblin</button>
-<button onclick="generateMonsterLoot('Golden Bokoblin')">Golden Bokoblin</button>
-<button onclick="generateMonsterLoot('Boss Silver Bokoblin')">Boss Silver Bokoblin</button>
-<button onclick="generateMonsterLoot('Chuchu')">Chuchu</button>
-<button onclick="generateMonsterLoot('Boss Chuchu')">Boss Chuchu</button>
-<button onclick="generateMonsterLoot('Monke')">Monke</button>
-<button onclick="generateMonsterLoot('Le Oat Brothers')">Le Oat Brothers</button>
-<br><br>
-<input type="checkbox" id="cursedMedal" onclick="toggleCursedMode()"> Cursed Medal Mode
-<br><br>
-<div id="monsterLootResult"></div>
-
+            <div id="monsterLootResult" class="loot-result"></div>
+        </div>
+    </div>
 <script>
-// Chest loot tables for different areas
-const chestLootTables = {
-    "Clock Town Chest": [
-        { item: "1 Scrap", chance: 0.3 },
-        { item: "3 Gold", chance: 0.3 },
-        { item: "4 Gold", chance: 0.25 },
-        { item: "Deku Mask", chance: 0.075 },
-        { item: "Couple's Mask", chance: 0.075 }
-    ],
-    "Termina Field Chest": [
-        { item: "Bunny Hood", chance: 0.05 },
-        { item: "5 Gold", chance: 0.05 },
-        { item: "10 Rupees", chance: 0.2 },
-        { item: "2 Scraps", chance: 0.25 },
-        { item: "3 Gold", chance: 0.25 },
-        { item: "5 Rupees", chance: 0.25 }
-    ],
-};
+    // Function to expand range-based items
+    function expandRangeItem(item) {
+        // Check if item contains a range like "2-3"
+        const rangeMatch = item.match(/^(\d+)-(\d+)\s(.+)$/);
+        if (rangeMatch) {
+            const min = parseInt(rangeMatch[1]);
+            const max = parseInt(rangeMatch[2]);
+            const itemName = rangeMatch[3];
+            
+            // Generate a random number between min and max (inclusive)
+            const randomAmount = Math.floor(Math.random() * (max - min + 1)) + min;
+            
+            return `${randomAmount} ${itemName}`;
+        }
+        
+        // If no range is found, return the original item
+        return item;
+    }
 
-// Monster loot tables with guaranteed and optional cursed loot
-const monsterLootTables = {
-    "Normal Bokoblin": {
-        guaranteed: ["1 Gold", "1 Scrap"],
-        cursedLoot: {
-            guaranteed: ["2 Gold", "1 Scrap"]
-        }
-    },
-    "Silver Bokoblin": {
-        guaranteed: ["3 Gold", "3 Scraps", "1 Bokoblin Horn"],
-        cursedLoot: {
-            guaranteed: ["6 Gold", "3 Scraps", "2 Bokoblin Horn"]
-        }
-    },
-    "Golden Bokoblin": {
-        guaranteed: ["15 Gold", "6 Scraps", "1-2 Rare Scraps", "2-3 Bokoblin Horns"],
-        cursedLoot: {
-            guaranteed: ["30 Gold", "6 Scraps", "5 Bokoblin Horns"],
-        }
-    },
-    "Boss Silver Bokoblin": {
-        guaranteed: ["1 Skill Point", "5 Gold", "4 Bokoblin Horns", "5 Scraps", "2-3 Rare Scraps", "1 Large Bokoblin Horn"],
-        cursedLoot: {
-            guaranteed: ["10 Gold", "8 Bokoblin Horns", "2 Large Bokoblin Horns"],
-        }
-    },
-    "Chuchu": {
-        guaranteed: ["1 Rupee"],
-        nonGuaranteed: [
-            { item: "1 Chuchu Jelly", chance: 1 }
+    // Chest loot tables for different areas
+    const chestLootTables = {
+        "Clock Town Chest": [
+            { item: "1 Scrap", chance: 0.3 },
+            { item: "3 Gold", chance: 0.3 },
+            { item: "4 Gold", chance: 0.25 },
+            { item: "Deku Mask", chance: 0.075 },
+            { item: "Couple's Mask", chance: 0.075 }
         ],
-        cursedLoot: {
-            guaranteed: ["2 Rupees", "2 Chuchu Jelly"],
+        "Termina Field Chest": [
+            { item: "Bunny Hood", chance: 0.05 },
+            { item: "5 Gold", chance: 0.05 },
+            { item: "10 Rupees", chance: 0.2 },
+            { item: "2 Scraps", chance: 0.25 },
+            { item: "3 Gold", chance: 0.25 },
+            { item: "5 Rupees", chance: 0.25 }
+        ]
+    };
+
+    // Monster loot tables with guaranteed and optional cursed loot
+    const monsterLootTables = {
+        "Normal Bokoblin": {
+            guaranteed: ["1 Gold", "1 Scrap"],
+            cursedLoot: {
+                guaranteed: ["2 Gold", "1 Scrap"]
+            }
+        },
+        "Silver Bokoblin": {
+            guaranteed: ["3 Gold", "3 Scraps", "1 Bokoblin Horn"],
+            cursedLoot: {
+                guaranteed: ["6 Gold", "3 Scraps", "2 Bokoblin Horn"]
+            }
+        },
+        "Golden Bokoblin": {
+            guaranteed: ["15 Gold", "6 Scraps", "1-2 Rare Scraps", "2-3 Bokoblin Horns"],
+            cursedLoot: {
+                guaranteed: ["30 Gold", "6 Scraps", "5 Bokoblin Horns"],
+            }
+        },
+        "Boss Silver Bokoblin": {
+            guaranteed: ["1 Skill Point", "5 Gold", "4 Bokoblin Horns", "5 Scraps", "2-3 Rare Scraps", "1 Large Bokoblin Horn"],
+            cursedLoot: {
+                guaranteed: ["10 Gold", "8 Bokoblin Horns", "2 Large Bokoblin Horns"],
+            }
+        },
+        "Chuchu": {
+            guaranteed: ["1 Rupee", "1 Chuchu Jelly"],
+            cursedLoot: {
+                guaranteed: ["2 Rupees", "2 Chuchu Jelly"],
+            }
+        },
+        "Boss Chuchu": {
+            guaranteed: ["8 Rupees", "3 Scraps", "1 Rare Scrap", "3 Chuchu Jelly"],
+            cursedLoot: {
+                guaranteed: ["16 Rupees", "6 Chuchu Jelly"]
+            }
+        },
+        "Monke": {
+            guaranteed: ["2 Skill Points", "5 Gold", "10 Scraps"],
+            cursedLoot: {
+                guaranteed: ["2 Skill Points", "10 Gold", "10 Scraps"]
+            }
+        },
+        "Le Oat Brothers": {
+            guaranteed: ["5 Gold"],
+            cursedLoot: {
+                guaranteed: ["10 Gold"],
+                nonGuaranteed: [
+                    { item: "Unlimited Bacon", chance: 0.01 }
+                ]
+            }
         }
-    },
-    "Boss Chuchu": {
-        guaranteed: ["8 Rupees", "3 Scraps", "1 Rare Scrap", "3 Chuchu Jelly"],
-        cursedLoot: {
-            guaranteed: ["16 Rupees", "6 Chuchu Jelly"]
+    };
+
+    // Chest loot generator
+    function generateChestLoot(chestName) {
+        const loot = chestLootTables[chestName];
+        let selectedItem = null;
+
+        // Select a single random item based on chances
+        const randomValue = Math.random();
+        let cumulativeChance = 0;
+        for (let item of loot) {
+            cumulativeChance += item.chance;
+            if (randomValue <= cumulativeChance) {
+                selectedItem = item.item;
+                break;
+            }
         }
-    },
-    "Monke": {
-        guaranteed: ["2 Skill Points", "5 Gold", "10 Scraps"],
-        cursedLoot: {
-            guaranteed: ["2 Skill Points", "10 Gold", "10 Scraps"]
-        }
-    },
-    "Le Oat Brothers": {
-        guaranteed: ["5 Gold"],
-        cursedLoot: {
-            guaranteed: ["10 Gold"],
-            nonGuaranteed: [
-                { item: "Unlimited Bacon", chance: 0.05 }
-            ]
+
+        // Display the selected item
+        if (selectedItem) {
+            document.getElementById("chestLootResult").innerHTML = 
+                `<div class="lootItem">${selectedItem}</div>`;
         }
     }
-};
 
-// Toggle cursed mode
-function toggleCursedMode() {
-    const isCursed = document.getElementById('cursedMedal').checked;
-    if (isCursed) {
-        alert("Cursed Medal Mode: Activated");
-    }
-}
+    // Monster loot generator
+    function generateMonsterLoot(monsterName) {
+        const lootTable = monsterLootTables[monsterName];
+        const isCursed = document.getElementById('cursedMedal').checked;
+        let result = "";
 
-// Chest loot generator
-function generateChestLoot(chestName) {
-    const loot = chestLootTables[chestName];
-    let result = "";
-    loot.forEach(item => {
-        if (Math.random() < item.chance) {
-            result += `<div class="lootItem ${Math.random() < 0.1 ? "cursedItem" : ""}">${item.item}</div>`;
+        // If Cursed Medal Mode is on, only add cursed loot
+        if (isCursed) {
+            lootTable.cursedLoot.guaranteed.forEach(item => {
+                // Expand any range-based items
+                const expandedItem = expandRangeItem(item);
+                result += `<div class="lootItem cursedItem">${expandedItem}</div>`;
+            });
+            
+            // Handle optional cursed loot if exists
+            if (lootTable.cursedLoot.nonGuaranteed) {
+                lootTable.cursedLoot.nonGuaranteed.forEach(nonGuaranteedItem => {
+                    if (Math.random() < nonGuaranteedItem.chance) {
+                        const expandedItem = expandRangeItem(nonGuaranteedItem.item);
+                        result += `<div class="lootItem cursedItem">${expandedItem}</div>`;
+                    }
+                });
+            }
+        } else {
+            // Normal mode - only add guaranteed loot
+            lootTable.guaranteed.forEach(item => {
+                // Expand any range-based items
+                const expandedItem = expandRangeItem(item);
+                result += `<div class="lootItem">${expandedItem}</div>`;
+            });
         }
-    });
-    document.getElementById("chestLootResult").innerHTML = result;
-}
 
-// Monster loot generator
-function generateMonsterLoot(monsterName) {
-    const lootTable = monsterLootTables[monsterName];
-    let result = "";
-    lootTable.guaranteed.forEach(item => {
-        result += `<div class="lootItem ${Math.random() < 0.1 ? "cursedItem" : ""}">${item}</div>`;
-    });
-    if (document.getElementById('cursedMedal').checked) {
-        lootTable.cursedLoot.guaranteed.forEach(item => {
-            result += `<div class="lootItem cursedItem">${item}</div>`;
-        });
+        document.getElementById("monsterLootResult").innerHTML = result;
     }
-    document.getElementById("monsterLootResult").innerHTML = result;
-}
-</script>
 
+document.getElementById('cursedMedal').addEventListener('change', function() {
+    const resultDiv = document.getElementById('monsterLootResult');
+    if (this.checked) {
+        resultDiv.textContent = 'Cursed Artifact Mode activated!';
+        resultDiv.style.color = 'var(--blood-red)';
+    } else {
+        resultDiv.textContent = '';
+    }
+});
+
+
+    // Add event listener for cursed medal checkbox
+    document.getElementById('cursedMedal').addEventListener('change', toggleCursedMode);
+    </script>
 </body>
 </html>
