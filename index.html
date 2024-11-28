@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loot Generator</title>
     <style>
-        :root {
+       :root {
             --parchment-dark: #e6d8c3;
             --ink-black: #1a1a1a;
             --leather-deep: #4a3328;
@@ -255,9 +255,17 @@
 
             <div id="monsterLootResult" class="loot-result"></div>
         </div>
+
+        <div class="section">
+            <div class="button-group">
+                <button onclick="rollDice()">Roll Dice</button>
+            </div>
+            <div id="diceLootResult" class="loot-result"></div>
+        </div>
     </div>
-<script>
-    // Function to expand range-based items
+
+    <script>
+        // Function to expand range-based items
     function expandRangeItem(item) {
         // Check if item contains a range like "2-3"
         const rangeMatch = item.match(/^(\d+)-(\d+)\s(.+)$/);
@@ -421,6 +429,27 @@ document.getElementById('cursedMedal').addEventListener('change', function() {
 
     // Add event listener for cursed medal checkbox
     document.getElementById('cursedMedal').addEventListener('change', toggleCursedMode);
+
+        // New dice rolling function
+        function rollDice() {
+            const diceTypes = [
+                { name: 'D-20 (1)', sides: 20 },
+                { name: 'D-20 (2)', sides: 20 },
+                { name: 'D-12', sides: 12 },
+                { name: 'D-8', sides: 8 },
+                { name: 'D-6', sides: 6 }
+            ];
+
+            let resultHTML = '';
+            diceTypes.forEach(die => {
+                const roll = Math.floor(Math.random() * die.sides) + 1;
+                resultHTML += `<div class="lootItem">${die.name}: ${roll}</div>`;
+            });
+
+            document.getElementById('diceLootResult').innerHTML = resultHTML;
+        }
+
+        // Existing event listeners and functions from the original script...
     </script>
 </body>
 </html>
