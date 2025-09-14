@@ -303,7 +303,7 @@
                       { item: "2 Extra Gold", chance: 0.2 },
                       { item: "1 Australium", chance: 0.01 },
                       { item: "4 Extra Gold", chance: 0.05 },
-                      { item: "1 Money Tree Sapling", chance: 0.005 },
+                      { item: "1 Money Tree Sapling", chance: 0.01 },
                   ]
               }
           };
@@ -324,7 +324,7 @@
               // Roll for extra drops
               lootTable.extras.forEach(extra => {
                   if (Math.random() < extra.chance) {
-                      const isLegendary = extra.chance === 0.01;
+                      const isLegendary = extra.chance === 0.1;
                       const className = isLegendary ? "lootItem plant-icon legendary-plant" : "lootItem plant-icon";
                       result += `<div class="${className}">${extra.item}</div>`;
                   }
