@@ -324,7 +324,7 @@
               // Roll for extra drops
               lootTable.extras.forEach(extra => {
                   if (Math.random() < extra.chance) {
-                      const isLegendary = extra.chance === 0.1;
+                      const isLegendary = extra.chance ==< 0.9;
                       const className = isLegendary ? "lootItem plant-icon legendary-plant" : "lootItem plant-icon";
                       result += `<div class="${className}">${extra.item}</div>`;
                   }
