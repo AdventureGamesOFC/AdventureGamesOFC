@@ -311,28 +311,29 @@
           // All your existing generator functions...
           // generateChestLoot, generateMonsterLoot, rollDice functions...
          
-          // Add the farming loot generator function
-          function generateFarmLoot(cropName) {
-              const lootTable = farmLootTables[cropName];
-              let result = "";
-         
-              // Add guaranteed drops
-              lootTable.guaranteed.forEach(item => {
-                  result += `<div class="lootItem plant-icon">${item}</div>`;
-              });
-         
-              // Roll for extra drops
-              lootTable.extras.forEach(extra => {
-                  if (Math.random() < extra.chance) {
-                      const isLegendary = extra.chance ==< 0.9;
-                      const className = isLegendary ? "lootItem plant-icon legendary-plant" : "lootItem plant-icon";
-                      result += `<div class="${className}">${extra.item}</div>`;
-                  }
-              });
-         
-              document.getElementById("farmLootResult").innerHTML = result;
-          }
-         
+function generateFarmLoot(cropName) {
+    const lootTable = farmLootTables[cropName];
+    let result = "";
+
+    // Add guaranteed drops
+    lootTable.guaranteed.forEach(item => {
+        result += `<div class="lootItem plant-icon">${item}</div>`;
+    });
+
+    // Roll for extra drops
+    lootTable.extras.forEach(extra => {
+        const roll = Math.random(); // roll between 0–1
+        if (roll < extra.chance) {
+            // Legendary if roll is 0.09 or less
+            const isLegendary = roll <= 0.09;
+            const className = isLegendary ? "lootItem plant-icon legendary-plant" : "lootItem plant-icon";
+            result += `<div class="${className}">${extra.item}</div>`;
+        }
+    });
+
+    document.getElementById("farmLootResult").innerHTML = result;
+}
+
           // Event listener for cursed medal
           document.getElementById('cursedMedal').addEventListener('change', function() {
               const resultDiv = document.getElementById('monsterLootResult');
